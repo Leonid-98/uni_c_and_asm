@@ -25,7 +25,7 @@ void stack_push(int element) {
         int tmp_size = stack.size * 2;
         int* tmp_arr = NULL;
 
-        tmp_arr = realloc(stack.arr, tmp_size);
+        tmp_arr = realloc(stack.arr, sizeof(int) * tmp_size);
         if (tmp_arr == NULL) {
             printf("Mäluala suuruse muutmine ebaõnnestus.\n");
             return;
