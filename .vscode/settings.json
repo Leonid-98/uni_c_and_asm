@@ -1,0 +1,15 @@
+{
+    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 4, ColumnLimit: 0}",
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "c:\\work\\c_and_asm",
+            "binaryPath": "c:\\work\\c_and_asm\\main",
+            "binaryArgs": []
+        }
+    ],
+    "files.associations": {
+        "mem.h": "c",
+        "stdio.h": "c",
+        "cstdlib": "c"
+    },
+}
