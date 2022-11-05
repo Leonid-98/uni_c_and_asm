@@ -10,6 +10,13 @@
     "files.associations": {
         "mem.h": "c",
         "stdio.h": "c",
-        "cstdlib": "c"
+        "cstdlib": "c",
+        "stack.h": "c",
+        "cstdarg": "c",
+        "cstdio": "c",
+        "cwchar": "c",
+        "cwctype": "c",
+        "cstdbool": "c",
+        "cstdint": "c"
     },
 }

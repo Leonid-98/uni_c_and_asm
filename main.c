@@ -5,26 +5,35 @@
 
 int main() {
     int input;
+    struct stack_st stack = EMPTY_STACK;
 
     while (1) {
         scanf("%d", &input);
         if (input == 0) {
-            stack_print();
+            stack_print(&stack);
             break;
         }
-        if (stack_isEmpty()) {
-            stack_push(input);
+        // if (input == -1) {
+        //     stack_pop(&stack);
+        //     continue;
+        // }
+        // if (input == 228) {
+        //     stack_print(&stack);
+        //     continue;
+        // }
+        if (stack_isEmpty(&stack)) {
+            stack_push(&stack, input);
             continue;
         }
 
-        if (input > 0 && stack_peek() > 0) {
-            stack_push(input);
+        if (input > 0 && stack_peek(&stack) > 0) {
+            stack_push(&stack, input);
 
-        } else if ((input > 0 && stack_peek() < 0 || input < 0)) {
-            int sum = stack_peek() + input;
+        } else if ((input > 0 && stack_peek(&stack) < 0 || input < 0)) {
+            int sum = stack_peek(&stack) + input;
             if (sum != 0) {
-                stack_peek();
-                stack_push(sum);
+                stack_peek(&stack);
+                stack_push(&stack, sum);
             }
         }
     }
