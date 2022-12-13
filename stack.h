@@ -14,5 +14,6 @@ int stack_pop(struct stack_st *stack);
 int stack_isEmpty(struct stack_st *stack);
 int stack_peek(struct stack_st *stack);
 void stack_print(struct stack_st *stack);
+void stack_free(struct stack_st *stack);
 
 #endif

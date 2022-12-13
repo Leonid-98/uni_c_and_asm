@@ -13,14 +13,20 @@ int main() {
             stack_print(&stack);
             break;
         }
-        // if (input == -1) {
-        //     stack_pop(&stack);
-        //     continue;
-        // }
-        // if (input == 228) {
-        //     stack_print(&stack);
-        //     continue;
-        // }
+        
+
+        if (input == -1) {
+            stack_pop(&stack);
+            continue;
+        }
+        if (input == 228) {
+            stack_print(&stack);
+            continue;
+        }
+        if (input == 322) {
+            stack_free(&stack);
+            continue;
+        }
         if (stack_isEmpty(&stack)) {
             stack_push(&stack, input);
             continue;

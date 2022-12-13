@@ -1,9 +1,14 @@
 {
-    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 4, ColumnLimit: 0}",
+    // "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 4, ColumnLimit: 0}",
     "makefile.launchConfigurations": [
         {
             "cwd": "c:\\work\\c_and_asm",
             "binaryPath": "c:\\work\\c_and_asm\\main",
+            "binaryArgs": []
+        },
+        {
+            "cwd": "c:\\work\\c_and_asm",
+            "binaryPath": "c:\\work\\c_and_asm\\bfi",
             "binaryArgs": []
         }
     ],
@@ -17,6 +22,8 @@
         "cwchar": "c",
         "cwctype": "c",
         "cstdbool": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "stdlib.h": "c"
     },
+    "ros.distro": "noetic",
 }
