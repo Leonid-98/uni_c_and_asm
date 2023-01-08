@@ -7,4 +7,30 @@
 #define PRINT_PARAMS "%c", c
 #endif
 
+enum instructions_e
+{
+    BF_RIGHT = '>',
+    BF_LEFT = '<',
+    BF_INCREASE = '+',
+    BF_DECREASE = '-',
+    BF_READ = ',',
+    BF_PRINT = '.',
+    BF_START_LOOP = '[',
+    BF_END_LOOP = ']',
+    BF_DEBUG = '#'
+};
+
+struct BF_instruction_st
+{
+    void (*run)(struct BF_instruction_st *instruction, int *index);
+
+    union
+    {
+        int increment;
+        int numberOfPositions;
+        int loopForwardIndex;
+        int loopBackIndex;
+    };
+};
+
 #endif

@@ -4,16 +4,10 @@
 #define MEMORY_SIZE 30000
 #define DEBUG_PRINT_SIZE 10
 
-struct BF_instruction_st {
-    void (*run)(struct BF_instruction_st *instruction, int *index);
-
-    union {
-        int increment;
-        int numberOfPositions;
-        int loopForwardIndex;
-
-        int loopBackIndex;
-    };
+struct memory_st
+{
+    char arr[MEMORY_SIZE];
+    int index;
 };
 
 int mem_inc();

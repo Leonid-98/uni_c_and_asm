@@ -16,3 +16,4 @@ clean:
 
 stack_test: stack.h stack.o
 	$(CC) $(CFLAGS) main.c stack.o -o main	
+
