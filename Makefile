@@ -9,7 +9,7 @@ mem.o: mem.c
 	$(CC) $(CFLAGS) -c mem.c
 
 bfi: stack.h stack.o mem.h mem.o
-	$(CC) $(CFLAGS) bfi.c mem.o stack.o -o bfi	
+	$(CC) $(CFLAGS) bfi.c mem.o stack.o -o bfi.exe	
 
 clean:
 	rm -fr main stack.o

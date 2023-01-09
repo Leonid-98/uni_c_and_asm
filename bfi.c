@@ -6,9 +6,9 @@
 #include "mem.h"
 #include "stack.h"
 
-/** =========
-  Interpret
-========== */
+// ############################################################################
+// Increment/decrement instr
+// ############################################################################
 
 void BF_increment_run(struct BF_instruction_st *instruction, int *index)
 {
@@ -36,6 +36,41 @@ struct BF_instruction_st *BF_increment_new(int increment)
 cleanup:
     return new;
 }
+
+// #######################
+// Move left/right instr #
+// #######################
+
+void BF_move_run(struct BF_instruction_st *instruction, int *index)
+{
+    mem_move(instruction->numberOfPositions);
+    (*index)++;
+}
+
+struct BF_instruction_st *BF_move_new(int numberOfPositions)
+{
+    struct BF_instruction_st *new = NULL;
+    if (numberOfPositions == 0)
+    {
+        printf("R/L instruktsiooni parameeter ei saa olla 0!");
+        goto cleanup;
+    }
+
+    new = malloc(sizeof(struct BF_instruction_st));
+    if (new == NULL)
+    {
+        printf("Mälu küsimine ebaõnnestus.");
+        goto cleanup;
+    }
+    new->numberOfPositions = numberOfPositions;
+    new->run = BF_move_run;
+cleanup:
+    return new;
+}
+
+// ##################
+// Begin loop instr #
+// ##################
 
 void BF_beginLoop_run(struct BF_instruction_st *instruction, int *index)
 {
@@ -74,6 +109,10 @@ cleanup:
     return new;
 }
 
+// ################
+// End loop instr #
+// ################
+
 void BF_endLoop_run(struct BF_instruction_st *instruction, int *index)
 {
     int val = mem_get();
@@ -97,7 +136,6 @@ void BF_endLoop_run(struct BF_instruction_st *instruction, int *index)
 struct BF_instruction_st *BF_endLoop_new(int loopBackIndex)
 {
     struct BF_instruction_st *new = NULL;
-
     new = malloc(sizeof(struct BF_instruction_st));
     if (new == NULL)
     {
@@ -110,6 +148,92 @@ struct BF_instruction_st *BF_endLoop_new(int loopBackIndex)
 cleanup:
     return new;
 }
+
+// #############
+// Print instr #
+// #############
+
+void BF_print_run(struct BF_instruction_st *instruction, int *index)
+{
+    char c = mem_get();
+    printf(PRINT_PARAMS);
+    (*index)++;
+}
+
+struct BF_instruction_st *BF_print_new()
+{
+    struct BF_instruction_st *new = NULL;
+    new = malloc(sizeof(struct BF_instruction_st));
+    if (new == NULL)
+    {
+        printf("Mälu küsimine ebaõnnestus.");
+        goto cleanup;
+    }
+
+    new->run = BF_print_run;
+cleanup:
+    return new;
+}
+
+// #############
+// Debug instr #
+// #############
+
+void BF_debug_run(struct BF_instruction_st *instruction, int *index)
+{
+    mem_printDebug();
+    (*index)++;
+}
+
+struct BF_instruction_st *BF_debug_new()
+{
+    struct BF_instruction_st *new = NULL;
+    new = malloc(sizeof(struct BF_instruction_st));
+    if (new == NULL)
+    {
+        printf("Mälu küsimine ebaõnnestus.");
+        goto cleanup;
+    }
+
+    new->run = BF_debug_run;
+cleanup:
+    return new;
+}
+
+// ############
+// Read instr #
+// ############
+
+void BF_read_run(struct BF_instruction_st *instruction, int *index)
+{
+    int c = getc(stdin);
+    if (c == EOF)
+    {
+        printf("Sisendi lõpp!\n");
+        return;
+    }
+    mem_set(c);
+    (*index)++;
+}
+
+struct BF_instruction_st *BF_read_new()
+{
+    struct BF_instruction_st *new = NULL;
+    new = malloc(sizeof(struct BF_instruction_st));
+    if (new == NULL)
+    {
+        printf("Mälu küsimine ebaõnnestus.");
+        goto cleanup;
+    }
+
+    new->run = BF_read_run;
+cleanup:
+    return new;
+}
+
+// ############################################################################
+// Main related
+// ############################################################################
 
 void parse(struct BF_instruction_st **inst_arr, char *program)
 {
@@ -130,8 +254,6 @@ void parse(struct BF_instruction_st **inst_arr, char *program)
             inst_arr[i] = BF_increment_new(-1);
             break;
 
-            /** // TODO! - Lisa ülejäänud instruktsioonid. **/
-
         case BF_START_LOOP:
             inst_arr[i] = BF_beginLoop_new();
             stack_push(&loopStack, i);
@@ -146,6 +268,26 @@ void parse(struct BF_instruction_st **inst_arr, char *program)
 
             break;
         }
+
+        case BF_RIGHT:
+            inst_arr[i] = BF_move_new(1);
+            break;
+
+        case BF_LEFT:
+            inst_arr[i] = BF_move_new(-1);
+            break;
+
+        case BF_DEBUG:
+            inst_arr[i] = BF_debug_new();
+            break;
+
+        case BF_PRINT:
+            inst_arr[i] = BF_print_new();
+            break;
+
+        case BF_READ:
+            inst_arr[i] = BF_read_new();
+            break;
 
         default:;
             break;
@@ -184,11 +326,10 @@ void interpret2(char *program)
     /** // TODO! Mälu vajab vabastamist! **/
 }
 
-/** =========
- Old interp
-========== */
-
-void interpret(char *program)
+/**
+ * Old interpreter
+ */
+void interpret1(char *program)
 {
     int instruction_ptr = 0;
     int loop_counter = 0;
@@ -261,10 +402,6 @@ void interpret(char *program)
                 {
                     instruction_ptr--;
                     if ((program[instruction_ptr] == '[' && loop_counter == 0))
-                    {
-                        break;
-                    }
-                    else if (program[instruction_ptr] == '[' && loop_counter == 0)
                     {
                         break;
                     }
