@@ -3,8 +3,6 @@
 
 #include "stack.h"
 
-
-
 struct stack_st stack = EMPTY_STACK;
 
 void stack_push(struct stack_st *stack, int element)
@@ -41,14 +39,17 @@ void stack_push(struct stack_st *stack, int element)
 
 int stack_pop(struct stack_st *stack)
 {
+    if (stack_isEmpty(stack))
+    {
+        printf("Ei saa pop'ida, stack on tühi!.\n");
+        return 0;
+    }
     stack->len--;
     int element = stack->arr[stack->len];
-    
 
     if (stack->len <= 0)
     {
         stack_free(stack); // TODO check datatype
-        return 0;
     }
     else
     {
@@ -66,7 +67,6 @@ int stack_pop(struct stack_st *stack)
             stack->arr = tmp_arr;
             stack->size = tmp_size;
         }
-        
     }
     return element;
 }
