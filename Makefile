@@ -34,5 +34,4 @@ $(OUT_DIR)/bfi: $(OUT_DIR)/stack.o $(OUT_DIR)/mem.o
 	$(CC) $(CFLAGS) Src/bfi.c $(OUT_DIR)/mem.o $(OUT_DIR)/stack.o -o $(OUT_DIR)/bfi
 
 clean:
-	rm -fr $(OUT_DIR)/mem.o
-	rm -fr $(OUT_DIR)/stack.o
+	rm -fr $(OUT_DIR)/*
