@@ -1,3 +1,4 @@
+
 CC=gcc
 CFLAGS=-I./Inc -m32
 
@@ -19,7 +20,7 @@ $(OUT_DIR)/bfi: $(OUT_DIR)/stack.o $(OUT_DIR)/mem.o
 clean:
 	@rm -fr $(OUT_DIR)/*
 
-compiler: $(OUT_DIR)/bfi
+compiler: clean $(OUT_DIR)/bfi
 
 translator: compiler
 	@Out/./bfi ">++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+." >> $(OUT_DIR)/hello.asm
@@ -28,7 +29,7 @@ translator: compiler
 	@$(CC) $(CFLAGS) $(OUT_DIR)/mem.o $(OUT_DIR)/hello.o -o $(OUT_DIR)/hello
 
 run: translator
-	@$(OUT_DIR)/./hello
+	@$(OUT_DIR)/./hello || /bin/true
 
     
 	
