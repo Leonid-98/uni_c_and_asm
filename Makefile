@@ -18,30 +18,35 @@
 # 	$(CC) $(CFLAGS) main.c stack.o -o main	
 
 CC=gcc
-CFLAGS=-I./Inc
+CFLAGS=-I./Inc -m32
+
+NASM=nasm
+ASMFLAGS=-felf
 
 OUT_DIR=Out
 
-all: $(OUT_DIR)/bfi
+# all: $(OUT_DIR)/bfi
 
 $(OUT_DIR)/stack.o: Src/stack.c Inc/stack.h
-	$(CC) $(CFLAGS) -c Src/stack.c -o $(OUT_DIR)/stack.o
+	@$(CC) $(CFLAGS) -c Src/stack.c -o $(OUT_DIR)/stack.o
 
 $(OUT_DIR)/mem.o: Src/mem.c Inc/mem.h
-	$(CC) $(CFLAGS) -c Src/mem.c -o $(OUT_DIR)/mem.o
+	@$(CC) $(CFLAGS) -c Src/mem.c -o $(OUT_DIR)/mem.o
 
 $(OUT_DIR)/bfi: $(OUT_DIR)/stack.o $(OUT_DIR)/mem.o
-	$(CC) $(CFLAGS) Src/bfi.c $(OUT_DIR)/mem.o $(OUT_DIR)/stack.o -o $(OUT_DIR)/bfi
+	@$(CC) $(CFLAGS) Src/bfi.c $(OUT_DIR)/mem.o $(OUT_DIR)/stack.o -o $(OUT_DIR)/bfi
 
 clean:
-	rm -fr $(OUT_DIR)/*
+	@rm -fr $(OUT_DIR)/*
 
-asm:
-	gcc -I./Inc -m32 -c Src/mem.c
-	nasm hello.asm -felf
-	gcc -m32 mem.o hello.o -o hello
+compiler: $(OUT_DIR)/bfi
 
-asm_clean:
-	rm mem.o
-	rm hello.o
-	rm hello
+run: compiler
+	@Out/./bfi ">++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+." >> Out/hello.asm
+	@$(CC) $(CFLAGS) -c Src/mem.c -o $(OUT_DIR)/mem.o
+	@$(NASM) Out/hello.asm -felf
+	@$(CC) $(CFLAGS) $(OUT_DIR)/mem.o $(OUT_DIR)/hello.o -o $(OUT_DIR)/hello
+
+
+make a:
+	$(OUT_DIR)/./hello

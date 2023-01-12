@@ -451,8 +451,6 @@ void interpret2(char *program)
     parse(inst_arr, program);
     // run(inst_arr, program_len);
     printAsm(inst_arr, program_len);
-
-    /** // TODO! Mälu vajab vabastamist! **/
 }
 
 /**
