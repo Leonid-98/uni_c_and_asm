@@ -10,6 +10,25 @@
 // Increment/decrement instr
 // ############################################################################
 
+/*
+    ;;;; + or -
+    call mem_inc/ mem_dec
+*/
+void BF_increment_printAsm(struct BF_instruction_st *instruction, int *index)
+{
+    for (int i = 0; i < abs(instruction->numberOfPositions); i++)
+    {
+        if (instruction->numberOfPositions > 0)
+        {
+            printf("    call mem_inc ; +\n");
+        }
+        else
+        {
+            printf("    call mem_dec ; -\n");
+        }
+    }
+}
+
 void BF_increment_run(struct BF_instruction_st *instruction, int *index)
 {
     mem_add(instruction->increment);
@@ -33,6 +52,7 @@ struct BF_instruction_st *BF_increment_new(int increment)
     }
     new->increment = increment;
     new->run = BF_increment_run;
+    new->printAsm = BF_increment_printAsm;
 cleanup:
     return new;
 }
@@ -40,6 +60,25 @@ cleanup:
 // #######################
 // Move left/right instr #
 // #######################
+
+/*
+    ;;;; > or <
+    call mem_right / mem_left
+*/
+void BF_move_printAsm(struct BF_instruction_st *instruction, int *index)
+{
+    for (int i = 0; i < abs(instruction->numberOfPositions); i++)
+    {
+        if (instruction->numberOfPositions > 0)
+        {
+            printf("    call mem_right ; >\n");
+        }
+        else
+        {
+            printf("    call mem_left ; <\n");
+        }
+    }
+}
 
 void BF_move_run(struct BF_instruction_st *instruction, int *index)
 {
@@ -64,6 +103,7 @@ struct BF_instruction_st *BF_move_new(int numberOfPositions)
     }
     new->numberOfPositions = numberOfPositions;
     new->run = BF_move_run;
+    new->printAsm = BF_move_printAsm;
 cleanup:
     return new;
 }
@@ -71,6 +111,21 @@ cleanup:
 // ##################
 // Begin loop instr #
 // ##################
+
+/*
+    ;;;; Instruktsioon [
+silt_<BEGIN>:
+    call mem_get
+    cmp eax, 0
+    je silt_<END>
+*/
+void BF_beginLoop_printAsm(struct BF_instruction_st *instruction, int *index)
+{
+    printf("silt_%d: ; [\n", *index);
+    printf("    call mem_get\n");
+    printf("    cmp eax, 0\n");
+    printf("    je silt_%d\n\n", instruction->loopBackIndex);
+}
 
 void BF_beginLoop_run(struct BF_instruction_st *instruction, int *index)
 {
@@ -90,21 +145,6 @@ void BF_beginLoop_run(struct BF_instruction_st *instruction, int *index)
     {
         ++*index;
     }
-}
-
-/*
-    ;;;; Instruktsioon [
-silt_<BEGIN>:
-    call mem_get
-    cmp eax, 0
-    je silt_<END>
-*/
-void BF_beginLoop_printAsm(struct BF_instruction_st *instruction, int *index) {
-    printf("    ;;;; Instruktsioon [\n");
-    printf("silt_%d\n", instruction->loopBackIndex);
-    printf("    call mem_get\n");
-    printf("    cmp eax, 0\n");
-    printf("    je silt_%d\n", *index);
 }
 
 struct BF_instruction_st *BF_beginLoop_new(void)
@@ -129,6 +169,17 @@ cleanup:
 // End loop instr #
 // ################
 
+/*
+    ;;;; Instruktsioon ]
+    jmp silt_<BEGIN>
+silt_<END>
+*/
+void BF_endLoop_printAsm(struct BF_instruction_st *instruction, int *index)
+{
+    printf("    jmp silt_%d ; ]\n", instruction->loopBackIndex);
+    printf("silt_%d:\n\n", *index);
+}
+
 void BF_endLoop_run(struct BF_instruction_st *instruction, int *index)
 {
     int val = mem_get();
@@ -147,17 +198,6 @@ void BF_endLoop_run(struct BF_instruction_st *instruction, int *index)
     {
         *index = instruction->loopBackIndex;
     }
-}
-
-/*
-    ;;;; Instruktsioon ]
-    jmp silt_<BEGIN>
-silt_<END>
-*/
-void BF_endLoop_printAsm(struct BF_instruction_st *instruction, int *index) {
-    printf("    ;;;; Instruktsioon ]\n");
-    printf("    jmp silt_%d\n", instruction->loopBackIndex);
-    printf("silt_%d:\n", *index);
 }
 
 struct BF_instruction_st *BF_endLoop_new(int loopBackIndex)
@@ -181,6 +221,21 @@ cleanup:
 // Print instr #
 // #############
 
+/*
+    ;;; Instruktsioon .
+    call mem_get
+    push eax
+    call putchar
+    add esp, 4
+*/
+void BF_print_printAsm(struct BF_instruction_st *instruction, int *index)
+{
+    printf("    call mem_get ; .\n");
+    printf("    push eax\n");
+    printf("    call putchar\n");
+    printf("    add esp, 4\n\n");
+}
+
 void BF_print_run(struct BF_instruction_st *instruction, int *index)
 {
     char c = mem_get();
@@ -199,6 +254,7 @@ struct BF_instruction_st *BF_print_new()
     }
 
     new->run = BF_print_run;
+    new->printAsm = BF_print_printAsm;
 cleanup:
     return new;
 }
@@ -206,6 +262,15 @@ cleanup:
 // #############
 // Debug instr #
 // #############
+
+/*
+    ;;; #
+    call mem_printDebug
+*/
+void BF_debug_printAsm(struct BF_instruction_st *instruction, int *index)
+{
+    printf("    call mem_printDebug ; #\n");
+}
 
 void BF_debug_run(struct BF_instruction_st *instruction, int *index)
 {
@@ -224,6 +289,7 @@ struct BF_instruction_st *BF_debug_new()
     }
 
     new->run = BF_debug_run;
+    new->printAsm = BF_debug_printAsm;
 cleanup:
     return new;
 }
@@ -231,6 +297,10 @@ cleanup:
 // ############
 // Read instr #
 // ############
+
+/*
+    NB! Asm code not implemented (and not required either)
+*/
 
 void BF_read_run(struct BF_instruction_st *instruction, int *index)
 {
@@ -262,6 +332,36 @@ cleanup:
 // ############################################################################
 // Main related
 // ############################################################################
+
+void printAsm(struct BF_instruction_st **inst_arr, int inst_arr_len)
+{
+
+    printf(
+        "global main\n"
+        "extern mem_add\n"
+        "extern mem_move\n"
+        "extern mem_inc\n"
+        "extern mem_dec\n"
+        "extern mem_left\n"
+        "extern mem_right\n"
+        "extern mem_get\n"
+        "extern mem_set\n"
+        "extern mem_printDebug\n\n"
+        "extern putchar\n\n");
+
+    printf("section .text\n");
+    printf("main:\n");
+
+    for (int i = 0; i < inst_arr_len; i++)
+    {
+        if (inst_arr[i] != NULL)
+        {
+            inst_arr[i]->printAsm(inst_arr[i], &i);
+        }
+    }
+
+    printf("    ret\n");
+}
 
 void parse(struct BF_instruction_st **inst_arr, char *program)
 {
@@ -349,7 +449,8 @@ void interpret2(char *program)
     struct BF_instruction_st **inst_arr = malloc(sizeof(struct BF_instruction_st *) * program_len);
 
     parse(inst_arr, program);
-    run(inst_arr, program_len);
+    // run(inst_arr, program_len);
+    printAsm(inst_arr, program_len);
 
     /** // TODO! Mälu vajab vabastamist! **/
 }

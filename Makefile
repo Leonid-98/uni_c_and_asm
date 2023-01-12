@@ -37,7 +37,7 @@ clean:
 	rm -fr $(OUT_DIR)/*
 
 asm:
-	gcc -m32 -c mem.c
+	gcc -I./Inc -m32 -c Src/mem.c
 	nasm hello.asm -felf
 	gcc -m32 mem.o hello.o -o hello
 
