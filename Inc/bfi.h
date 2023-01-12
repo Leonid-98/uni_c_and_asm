@@ -23,6 +23,7 @@ enum instructions_e
 struct BF_instruction_st
 {
     void (*run)(struct BF_instruction_st *instruction, int *index);
+    void (*printAsm)(struct BF_instruction_st *instruction, int *index);
 
     union
     {

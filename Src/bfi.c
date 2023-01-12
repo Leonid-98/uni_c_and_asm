@@ -92,6 +92,21 @@ void BF_beginLoop_run(struct BF_instruction_st *instruction, int *index)
     }
 }
 
+/*
+    ;;;; Instruktsioon [
+silt_<BEGIN>:
+    call mem_get
+    cmp eax, 0
+    je silt_<END>
+*/
+void BF_beginLoop_printAsm(struct BF_instruction_st *instruction, int *index) {
+    printf("    ;;;; Instruktsioon [\n");
+    printf("silt_%d\n", instruction->loopBackIndex);
+    printf("    call mem_get\n");
+    printf("    cmp eax, 0\n");
+    printf("    je silt_%d\n", *index);
+}
+
 struct BF_instruction_st *BF_beginLoop_new(void)
 {
     struct BF_instruction_st *new = NULL;
@@ -105,6 +120,7 @@ struct BF_instruction_st *BF_beginLoop_new(void)
 
     new->loopForwardIndex = -1;
     new->run = BF_beginLoop_run;
+    new->printAsm = BF_beginLoop_printAsm;
 cleanup:
     return new;
 }
@@ -133,6 +149,17 @@ void BF_endLoop_run(struct BF_instruction_st *instruction, int *index)
     }
 }
 
+/*
+    ;;;; Instruktsioon ]
+    jmp silt_<BEGIN>
+silt_<END>
+*/
+void BF_endLoop_printAsm(struct BF_instruction_st *instruction, int *index) {
+    printf("    ;;;; Instruktsioon ]\n");
+    printf("    jmp silt_%d\n", instruction->loopBackIndex);
+    printf("silt_%d:\n", *index);
+}
+
 struct BF_instruction_st *BF_endLoop_new(int loopBackIndex)
 {
     struct BF_instruction_st *new = NULL;
@@ -145,6 +172,7 @@ struct BF_instruction_st *BF_endLoop_new(int loopBackIndex)
 
     new->loopBackIndex = loopBackIndex;
     new->run = BF_endLoop_run;
+    new->printAsm = BF_endLoop_printAsm;
 cleanup:
     return new;
 }

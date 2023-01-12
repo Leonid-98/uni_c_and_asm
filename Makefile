@@ -35,3 +35,13 @@ $(OUT_DIR)/bfi: $(OUT_DIR)/stack.o $(OUT_DIR)/mem.o
 
 clean:
 	rm -fr $(OUT_DIR)/*
+
+asm:
+	gcc -m32 -c mem.c
+	nasm hello.asm -felf
+	gcc -m32 mem.o hello.o -o hello
+
+asm_clean:
+	rm mem.o
+	rm hello.o
+	rm hello

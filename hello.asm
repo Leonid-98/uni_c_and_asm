@@ -1,3 +1,5 @@
+; See kood on transleeritud Brainfuck programmist:
+; +++.
 global main
 extern mem_add
 extern mem_move
@@ -13,22 +15,14 @@ extern putchar
 
 section .text
 main:
-    ;;;; Instruktsioon +++
-    push dword 3
-    call mem_add
-
-    ; Puhastame magasini
-    add esi, 4
-
-    ;;;; Instruktsioon +
     call mem_inc
-
-    ;;;; Instruktsioon +
-    call mem_inc
+    
 
     ;;;; Instruktsioon .
     ; eax = mem_get();
     call mem_get
+
+    call mem_printDebug
 
     ; putchar(eax);
     push eax
@@ -37,6 +31,6 @@ main:
     ; Puhastame magasini
     add esp, 4
 
+
     ;;;; Programmi lõpp
     ret
-
