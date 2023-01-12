@@ -25,7 +25,6 @@ ASMFLAGS=-felf
 
 OUT_DIR=Out
 
-# all: $(OUT_DIR)/bfi
 
 $(OUT_DIR)/stack.o: Src/stack.c Inc/stack.h
 	@$(CC) $(CFLAGS) -c Src/stack.c -o $(OUT_DIR)/stack.o
@@ -41,12 +40,14 @@ clean:
 
 compiler: $(OUT_DIR)/bfi
 
-run: compiler
+translator: compiler
 	@Out/./bfi ">++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+." >> $(OUT_DIR)/hello.asm
 	@$(CC) $(CFLAGS) -c Src/mem.c -o $(OUT_DIR)/mem.o
 	@$(NASM) Out/hello.asm -felf
 	@$(CC) $(CFLAGS) $(OUT_DIR)/mem.o $(OUT_DIR)/hello.o -o $(OUT_DIR)/hello
 
-
-make a:
+run: translator
 	@$(OUT_DIR)/./hello
+
+    
+	
