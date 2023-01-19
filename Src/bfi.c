@@ -12,7 +12,9 @@
 
 /*
     ;;;; + or -
-    call mem_inc/ mem_dec
+    mov al, [esi]
+    inc al / dec al
+    mov [esi], al
 */
 void BF_increment_printAsm(struct BF_instruction_st *instruction, int *index)
 {
@@ -20,11 +22,17 @@ void BF_increment_printAsm(struct BF_instruction_st *instruction, int *index)
     {
         if (instruction->numberOfPositions > 0)
         {
-            printf("    call mem_inc ; +\n");
+            printf("    ; +\n");
+            printf("    mov al, [esi]\n");
+            printf("    inc al\n");
+            printf("    mov [esi], al\n\n");
         }
         else
         {
-            printf("    call mem_dec ; -\n");
+            printf("    ; +\n");
+            printf("    mov al, [esi]\n");
+            printf("    dec al\n");
+            printf("    mov [esi], al\n\n");
         }
     }
 }
