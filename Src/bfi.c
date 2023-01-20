@@ -29,7 +29,7 @@ void BF_increment_printAsm(struct BF_instruction_st *instruction, int *index)
         }
         else
         {
-            printf("    ; +\n");
+            printf("    ; -\n");
             printf("    mov al, [esi]\n");
             printf("    dec al\n");
             printf("    mov [esi], al\n\n");
@@ -79,11 +79,13 @@ void BF_move_printAsm(struct BF_instruction_st *instruction, int *index)
     {
         if (instruction->numberOfPositions > 0)
         {
-            printf("    call mem_right ; >\n");
+            printf("    ; >\n");
+            printf("    inc esi\n\n");
         }
         else
         {
-            printf("    call mem_left ; <\n");
+            printf("    ; <\n");
+            printf("    dec esi\n\n");
         }
     }
 }
@@ -129,8 +131,10 @@ silt_<BEGIN>:
 */
 void BF_beginLoop_printAsm(struct BF_instruction_st *instruction, int *index)
 {
-    printf("silt_%d: ; [\n", *index);
-    printf("    call mem_get\n");
+    printf(";[\n");
+    printf("silt_%d:\n", *index);
+    printf("    mov eax, 0\n");
+    printf("    mov al, [esi]\n");
     printf("    cmp eax, 0\n");
     printf("    je silt_%d\n\n", instruction->loopBackIndex);
 }
@@ -184,7 +188,8 @@ silt_<END>
 */
 void BF_endLoop_printAsm(struct BF_instruction_st *instruction, int *index)
 {
-    printf("    jmp silt_%d ; ]\n", instruction->loopBackIndex);
+    printf("    ; ]\n");
+    printf("    jmp silt_%d\n", instruction->loopBackIndex);
     printf("silt_%d:\n\n", *index);
 }
 
@@ -238,7 +243,9 @@ cleanup:
 */
 void BF_print_printAsm(struct BF_instruction_st *instruction, int *index)
 {
-    printf("    call mem_get ; .\n");
+    printf("    ; .\n");
+    printf("    mov eax, 0\n");
+    printf("    mov al, [esi]\n");
     printf("    push eax\n");
     printf("    call putchar\n");
     printf("    add esp, 4\n\n");
@@ -272,13 +279,8 @@ cleanup:
 // #############
 
 /*
-    ;;; #
-    call mem_printDebug
+    NB! Asm code not implemented (and not required either)
 */
-void BF_debug_printAsm(struct BF_instruction_st *instruction, int *index)
-{
-    printf("    call mem_printDebug ; #\n");
-}
 
 void BF_debug_run(struct BF_instruction_st *instruction, int *index)
 {
@@ -297,7 +299,6 @@ struct BF_instruction_st *BF_debug_new()
     }
 
     new->run = BF_debug_run;
-    new->printAsm = BF_debug_printAsm;
 cleanup:
     return new;
 }
@@ -344,21 +345,14 @@ cleanup:
 void printAsm(struct BF_instruction_st **inst_arr, int inst_arr_len)
 {
 
-    printf(
-        "global main\n"
-        "extern mem_add\n"
-        "extern mem_move\n"
-        "extern mem_inc\n"
-        "extern mem_dec\n"
-        "extern mem_left\n"
-        "extern mem_right\n"
-        "extern mem_get\n"
-        "extern mem_set\n"
-        "extern mem_printDebug\n\n"
-        "extern putchar\n\n");
-
+    printf("global main\n");
+    printf("extern putchar\n\n");
+    printf("section .data\n");
+    printf("    bfmem: times 30000 db 0\n\n");
     printf("section .text\n");
     printf("main:\n");
+    printf("    push esi\n");
+    printf("    mov esi, bfmem\n");
 
     for (int i = 0; i < inst_arr_len; i++)
     {
@@ -368,6 +362,7 @@ void printAsm(struct BF_instruction_st **inst_arr, int inst_arr_len)
         }
     }
 
+    printf("    pop esi\n");
     printf("    ret\n");
 }
 

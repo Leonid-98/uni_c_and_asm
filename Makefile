@@ -23,11 +23,9 @@ clean:
 compiler: clean $(OUT_DIR)/bfi
 
 translator: compiler
-	# @Out/./bfi ">++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+." >> $(OUT_DIR)/hello.asm
-	@Out/./bfi "+++[-#]" >> $(OUT_DIR)/hello.asm
-	@$(CC) $(CFLAGS) -c Src/mem.c -o $(OUT_DIR)/mem.o
+	@Out/./bfi ">++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+." >> $(OUT_DIR)/hello.asm
 	@$(NASM) Out/hello.asm -felf
-	@$(CC) $(CFLAGS) $(OUT_DIR)/mem.o $(OUT_DIR)/hello.o -o $(OUT_DIR)/hello
+	@$(CC) $(CFLAGS) $(OUT_DIR)/hello.o -o $(OUT_DIR)/hello
 
 run: translator
 	@$(OUT_DIR)/./hello || /bin/true
